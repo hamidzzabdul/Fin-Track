@@ -9,12 +9,14 @@ datasource db {
 
 model User {
   id           String        @id @default(uuid())
+  username     String        @unique
   email        String        @unique
   password     String
   transactions Transaction[]
   budget       Budget[]
-  createdAt    DateTime      @default(now())
   Savings      Savings[]
+  createdAt    DateTime      @default(now())
+  updateUt     DateTime      @updatedAt
 }
 
 model Transaction {
