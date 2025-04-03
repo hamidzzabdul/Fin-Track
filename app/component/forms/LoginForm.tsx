@@ -8,9 +8,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signIn } from "@/lib/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -54,7 +52,7 @@ const LoginForm = () => {
       }
       toast.dismiss();
       toast.success("Login successful!");
-      router.push("/");
+      router.push("/dashboard");
       router.refresh();
     } catch (error) {
       toast.dismiss();

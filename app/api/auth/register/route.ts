@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     try {
         const body = await req.json()
         const {email, username, password} = body
+        console.log(email, username)
 
         if (!email || !password) {
             return NextResponse.json(
@@ -34,6 +35,8 @@ export async function POST(req: Request) {
         })
 
         const{ password: _, ...rest} = newUser
+
+        console.log(newUser)
 
         return NextResponse.json({user: rest, message: "User created successfully"}, {status: 201})
 
