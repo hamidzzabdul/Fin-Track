@@ -51,9 +51,9 @@ const LoginForm = () => {
         throw new Error(data.error || "Login failed");
       }
       toast.dismiss();
-      router.refresh();
       router.push("/dashboard");
       toast.success("Login successful!");
+      router.refresh();
     } catch (error) {
       toast.dismiss();
       toast.error(error instanceof Error ? error.message : "Login failed");

@@ -8,49 +8,48 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(uuid())
-  username     String        @unique
-  email        String        @unique
-  password     String
-  transactions Transaction[]
-  budget       Budget[]
-  Savings      Savings[]
-  createdAt    DateTime      @default(now())
-  updateUt     DateTime      @updatedAt
+  id        String    @id @default(uuid())
+  username  String    @unique
+  email     String    @unique
+  password  String
+  income    Income[]
+  expense   Expense[]
+  createdAt DateTime  @default(now())
+  updateUt  DateTime  @updatedAt
+  Session   Session[]
 }
 
-model Transaction {
-  id         String    @id @default(uuid())
-  userId     String
-  user       User      @relation(fields: [userId], references: [id])
-  type       String
-  amount     Float
-  categoryId String?
-  Category   Category? @relation(fields: [categoryId], references: [id])
-  createdAt  DateTime  @default(now())
+model Income {
+  id        String   @id @default(uuid())
+  name      String
+  amount    Float
+  date      DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Expense {
+  id        String   @id @default(uuid())
+  name      String
+  amount    Float
+  date      DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Category {
-  id          String        @id @default(uuid())
-  name        String        @unique
-  transaction Transaction[]
+  id   String @id @default(uuid())
+  name String @unique
 }
 
-model Budget {
-  id        String   @id @default(uuid())
-  amount    Float
-  month     Int
-  year      Int
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-}
-
-model Savings {
-  id            String   @id @default(uuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  goal          Float
-  currentAmount Float    @default(0.0)
-  createdAt     DateTime @default(now())
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  expiresAt    DateTime
 }

@@ -15,6 +15,10 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { IoClose } from "react-icons/io5";
 
+// import { auth } from "@/lib/auth";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   amount: z.coerce.number().min(1, "Amount must be at least 1"),
@@ -27,6 +31,8 @@ interface IncomeOverviewProps {
 }
 
 const Modal = ({ onClose, type }: IncomeOverviewProps) => {
+  const { data: session, update } = useSession();
+  if (!session) update();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -36,8 +42,25 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      if (!session?.user?.id) throw new Error("Not Unauthorized");
+
+      const response = await fetch(`/api/${type}`, {
+        method: "POST",
+        body: JSON.stringify({
+          ...values,
+          userId: session.user.id,
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Failed to add ${type}`);
+      toast.success(`${type} added successfully`);
+      form.reset();
+    } catch (error) {
+      console.log(error);
+      toast.error(`Failed to add ${type}`);
+    }
   };
   return (
     <div
@@ -64,7 +87,9 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-sm font-semibold">Income</FormLabel>
+                <FormLabel className="text-sm font-semibold">
+                  {type === "income" ? "Income" : "Expense"}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder="Freelance,salary, etc"
@@ -111,7 +136,10 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
             )}
           />
           <div className="w-full">
-            <Button className="w-[150px] h-10 bg-purple-600 text-white hover:bg-purple-700 transition-all duration-200 ease-in-out float-left">
+            <Button
+              className="w-[150px] h-10 bg-purple-600 text-white hover:bg-purple-700 transition-all duration-200 ease-in-out float-left"
+              disabled={!session}
+            >
               Add {type === "income" ? "Income" : "Expense"}
             </Button>
           </div>

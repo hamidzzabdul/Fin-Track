@@ -12,7 +12,7 @@ const Page = () => {
   };
 
   return (
-    <div className="w-[95%] h-[100vh] relative mx-auto flex flex-col gap-8 mt-5">
+    <div className="w-[95%] h-[100vh] relative mx-auto flex flex-col gap-8 ">
       {showModal && (
         <div
           className="fixed inset-0 overflow-hidden bg-black bg-opacity-50 z-40"

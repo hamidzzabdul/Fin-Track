@@ -1,47 +1,51 @@
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { RiDownload2Fill } from "react-icons/ri";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
 
-const data = [
-  {
-    image: "",
-    name: "salary",
-    date: "18th March 2025",
-    amount: "20,000",
-  },
-  {
-    image: "",
-    name: "travel",
-    date: "02th Jan 2025",
-    amount: "1000",
-  },
-  {
-    image: "",
-    name: "Web",
-    date: "18th feb 2025",
-    amount: "1800",
-  },
-  {
-    image: "",
-    name: "Movie",
-    date: "18th march 2025",
-    amount: "20,000",
-  },
-  {
-    image: "",
-    name: "Food",
-    date: "01th jan 2025",
-    amount: "20,000",
-  },
-  {
-    image: "",
-    name: "App dev",
-    date: "17th april 2025",
-    amount: "20,000",
-  },
-];
+interface Income {
+  id: string;
+  name: string;
+  date: string;
+  amount: number;
+}
+
+const fetchIncomes = async () => {
+  try {
+    const res = await fetch("/api/income");
+    if (!res.ok) {
+      const errorData = await res.json(); // Get error details
+      throw new Error(errorData.message || "Failed to fetch incomes");
+    }
+    return res.json();
+  } catch (err) {
+    console.error("Fetch error:", err);
+    throw new Error("Network error. Please try again.");
+  }
+};
 
 const IncomeSources = () => {
+  const {
+    data: incomes,
+    isLoading,
+    error,
+  } = useQuery<Income[]>({
+    queryKey: ["incomes"],
+    queryFn: fetchIncomes,
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+
+  if (error) return <p>Error: {error.message}</p>;
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
   return (
     <div className="w-full h-[400px] rounded-md bg-white shadow-sm py-4 px-6">
       <div className="flex justify-between items-center">
@@ -54,10 +58,10 @@ const IncomeSources = () => {
       </div>
 
       <div className="w-full mt-4 grid md:grid-cols-2 gap-6">
-        {data.map((income, index) => (
+        {incomes?.map((income) => (
           <div
             className="flex items-center justify-between px-2 hover:bg-gray-100 rounded-md transition-all duration-300 p-2 cursor-pointer group"
-            key={index}
+            key={income.id}
           >
             <div className="flex items-center gap-3">
               <div className="w-[55px] h-[55px] rounded-full flex justify-center items-center bg-gray-100 border"></div>
@@ -65,7 +69,9 @@ const IncomeSources = () => {
                 <h3 className="text-sm font-semibold capitalize">
                   {income.name}
                 </h3>
-                <p className="text-xs text-gray-500">{income.date}</p>
+                <p className="text-xs text-gray-500">
+                  {formatDate(income.date)}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
