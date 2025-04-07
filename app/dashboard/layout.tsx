@@ -6,15 +6,15 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="w-full h-screen bg-gray-50">
-      <div className="w-full h-[5rem] shadow-md px-5 flex items-center">
+    <div className="flex flex-col h-screen bg-gray-50">
+      <div className="w-full h-[5rem] shadow-md px-5 flex items-center sticky top-0 bg-white z-10">
         <h1 className="text-2xl font-bold">Expense Tracker</h1>
       </div>
-      <div className="flex">
-        <div className="w-[15%]  h-screen p-4 ">
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-[15%] p-4 bg-white sticky top-[5rem] h-[calc(100vh-5rem)] overflow-y-auto">
           <DashboardSideBar />
         </div>
-        <main className="w-[85%] bg-gray-100">{children}</main>
+        <main className="w-[85%] overflow-y-auto bg-gray-100">{children}</main>
       </div>
     </div>
   );

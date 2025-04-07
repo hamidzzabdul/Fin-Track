@@ -118,3 +118,14 @@ npm run dev
 ⬜ Integrate **charts & analytics**
 
 ---
+
+Type Description
+feat: A new feature (adds functionality)
+fix: A bug fix (patches an issue)
+docs: Documentation changes (README, comments, etc.)
+style: Code style/formatting (no functional changes)
+refactor: Code restructuring (neither fixes nor adds features)
+perf: Performance improvements
+test: Adding or modifying tests
+chore: Maintenance tasks (dependency updates, CI/CD, etc.)
+revert: Reverts a previous commit

@@ -33,7 +33,12 @@ const generateMockData = () => {
   return data;
 };
 
-const ExpenseOverview = () => {
+interface ExpenseOverviewProps {
+  openModal: () => void;
+  type: "income" | "expense";
+}
+
+const ExpenseOverview = ({ openModal, type }: ExpenseOverviewProps) => {
   const [currentPeriod, setCurrentPeriod] = useState(0);
   const allData = generateMockData();
 
@@ -44,7 +49,7 @@ const ExpenseOverview = () => {
   }
   const currentData = periods[currentPeriod] || [];
   return (
-    <div className="w-full h-[450px] p-4 bg-white rounded-md shadow-sm">
+    <div className="w-full h-[400px] p-4 bg-white rounded-md shadow-sm">
       <div className="flex items-center justify-between ">
         <div className="flex flex-col gap-1">
           <h3 className="text-xl font-semibold ">Expense Overview</h3>
@@ -53,7 +58,10 @@ const ExpenseOverview = () => {
             your money goes
           </p>
         </div>
-        <button className="px-3 py-2 text-sm flex items-center gap-2 bg-red-200 text-red-600 rounded-md hover:bg-red-600 transition-all duration-200 ease-in-out cursor-pointer border-none hover:text-white ">
+        <button
+          className="px-3 py-2 text-sm flex items-center gap-2 bg-red-200 text-red-600 rounded-md hover:bg-red-600 transition-all duration-200 ease-in-out cursor-pointer border-none hover:text-white "
+          onClick={openModal}
+        >
           <FaPlus className="text-sm" />
           Add Expense
         </button>
