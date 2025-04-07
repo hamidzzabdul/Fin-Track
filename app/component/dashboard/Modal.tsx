@@ -18,11 +18,14 @@ import { IoClose } from "react-icons/io5";
 // import { auth } from "@/lib/auth";
 import { useSession } from "next-auth/react";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   amount: z.coerce.number().min(1, "Amount must be at least 1"),
   date: z.string().min(1, "Date is required"),
+  emoji: z.string().min(1, "Emoji is required"), // Add explicit validation
 });
 
 interface IncomeOverviewProps {
@@ -32,29 +35,43 @@ interface IncomeOverviewProps {
 
 const Modal = ({ onClose, type }: IncomeOverviewProps) => {
   const { data: session, update } = useSession();
-  if (!session) update();
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       amount: 0,
       date: "",
+      emoji: type === "income" ? "💰" : "💸", // Default emojis
     },
   });
 
+  const onEmojiClick = (emojiData: EmojiClickData) => {
+    form.setValue("emoji", emojiData.emoji, { shouldValidate: true });
+    setShowEmojiPicker(false);
+  };
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
       if (!session?.user?.id) throw new Error("Not Unauthorized");
 
       const response = await fetch(`/api/${type}`, {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           ...values,
           userId: session.user.id,
         }),
       });
 
-      if (!response.ok) throw new Error(`Failed to add ${type}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Failed to add ${type}`);
+      }
       toast.success(`${type} added successfully`);
       form.reset();
     } catch (error) {
@@ -65,7 +82,7 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
   return (
     <div
       className={`w-[50%]  bg-white rounded-md p-6 absolute ${
-        type === "income" ? "top-[38%]" : "top-[25%]"
+        type === "income" ? "top-[48%]" : "top-[25%]"
       } left-1/2 -translate-x-1/2 translate-y-[-50%] z-50`}
     >
       <div className="w-full flex justify-between items-center">
@@ -82,6 +99,36 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-4 mt-6"
         >
+          <FormField
+            control={form.control}
+            name="emoji"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-semibold">Icon</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      className="text-2xl p-2 rounded-md bg-gray-100 hover:bg-gray-200"
+                      onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    >
+                      {field.value}
+                    </button>
+                    {showEmojiPicker && (
+                      <div className="absolute z-10 mt-2">
+                        <EmojiPicker
+                          width={300}
+                          height={350}
+                          onEmojiClick={onEmojiClick}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="name"

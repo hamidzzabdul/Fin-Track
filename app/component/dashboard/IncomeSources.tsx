@@ -8,6 +8,7 @@ interface Income {
   name: string;
   date: string;
   amount: number;
+  emoji: string;
 }
 
 const fetchIncomes = async () => {
@@ -64,7 +65,9 @@ const IncomeSources = () => {
             key={income.id}
           >
             <div className="flex items-center gap-3">
-              <div className="w-[55px] h-[55px] rounded-full flex justify-center items-center bg-gray-100 border"></div>
+              <div className="w-[55px] h-[55px] rounded-full flex justify-center items-center bg-gray-100 border">
+                <p className="text-2xl">{income.emoji || "💰"}</p>
+              </div>
               <div className="flex flex-col gap-1">
                 <h3 className="text-sm font-semibold capitalize">
                   {income.name}

@@ -1,37 +1,21 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "User" (
+    "id" TEXT NOT NULL,
+    "username" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updateUt" TIMESTAMP(3) NOT NULL,
 
-  - You are about to drop the `Budget` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Savings` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Transaction` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "Budget" DROP CONSTRAINT "Budget_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Savings" DROP CONSTRAINT "Savings_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Transaction" DROP CONSTRAINT "Transaction_categoryId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Transaction" DROP CONSTRAINT "Transaction_userId_fkey";
-
--- DropTable
-DROP TABLE "Budget";
-
--- DropTable
-DROP TABLE "Savings";
-
--- DropTable
-DROP TABLE "Transaction";
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Income" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
+    "emoji" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
@@ -44,11 +28,20 @@ CREATE TABLE "Expense" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "amount" DOUBLE PRECISION NOT NULL,
+    "emoji" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "Expense_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Category" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+
+    CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -62,6 +55,15 @@ CREATE TABLE "Session" (
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_sessionToken_key" ON "Session"("sessionToken");
