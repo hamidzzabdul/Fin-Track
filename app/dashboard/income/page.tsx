@@ -12,16 +12,14 @@ const Page = () => {
   };
 
   return (
-    <div className="w-[95%] h-[100vh] relative mx-auto flex flex-col gap-8 ">
+    <div className="w-[95%] h-[100vh] relative mx-auto flex flex-col gap-8 mt-10">
       {showModal && (
         <div
           className="fixed inset-0 overflow-hidden bg-black bg-opacity-50 z-40"
           onClick={handleModal}
         ></div>
       )}
-      <div className="w-full h-screen overflow-hidden">
-        {showModal && <Modal onClose={handleModal} type="income" />}
-      </div>
+      {showModal && <Modal onClose={handleModal} type="income" />}
       <IncomeOverview openModal={handleModal} type="income" />
       <IncomeSources />
     </div>

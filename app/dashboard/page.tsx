@@ -12,7 +12,7 @@ const Dashboard = async () => {
   }
 
   return (
-    <div className="w-full h-[100vh] bg-gray-100 p-4 flex-col ">
+    <div className="w-full h-[100vh] bg-gray-100 p-4 flex-col">
       <div className="w-[95%] mx-auto flex flex-col gap-8">
         <Banner />
         <div className="grid lg:grid-cols-2 items-center gap-6">

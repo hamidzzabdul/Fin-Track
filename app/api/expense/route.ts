@@ -11,12 +11,13 @@ export async function POST(req: Request) {
             return NextResponse.json({message: "Unauthorized"}, {status: 401})
         }
         const body =await req.json()
-        const {name, amount, date} = body
+        const {name, amount, date, emoji} = body
 
         const income = await prisma.Expense.create({
             data:{
                 name,
                 amount, 
+                emoji,
                 date: new Date(date),
                 userId: session.user.id
             }

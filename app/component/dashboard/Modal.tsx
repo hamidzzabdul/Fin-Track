@@ -25,7 +25,7 @@ const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   amount: z.coerce.number().min(1, "Amount must be at least 1"),
   date: z.string().min(1, "Date is required"),
-  emoji: z.string().min(1, "Emoji is required"), // Add explicit validation
+  emoji: z.string().min(1, "Emoji is required"),
 });
 
 interface IncomeOverviewProps {
@@ -34,7 +34,7 @@ interface IncomeOverviewProps {
 }
 
 const Modal = ({ onClose, type }: IncomeOverviewProps) => {
-  const { data: session, update } = useSession();
+  const { data: session } = useSession();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,9 +54,11 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
+    if (!session?.user?.id) {
+      toast.error("Unauthorized - Please log in");
+      return;
+    }
     try {
-      if (!session?.user?.id) throw new Error("Not Unauthorized");
-
       const response = await fetch(`/api/${type}`, {
         method: "POST",
         headers: {
@@ -82,8 +84,10 @@ const Modal = ({ onClose, type }: IncomeOverviewProps) => {
   return (
     <div
       className={`w-[50%]  bg-white rounded-md p-6 absolute ${
-        type === "income" ? "top-[48%]" : "top-[25%]"
-      } left-1/2 -translate-x-1/2 translate-y-[-50%] z-50`}
+        type === "income" ? "top-[38%]" : "top-[25%]"
+      } left-1/2 -translate-x-1/2 ${
+        type === "expense" ? "translate-y-[-25%]" : "translate-y-[-50%]"
+      } z-50`}
     >
       <div className="w-full flex justify-between items-center">
         <p className="font-semibold text-lg">

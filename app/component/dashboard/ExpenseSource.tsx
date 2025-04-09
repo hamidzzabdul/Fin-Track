@@ -2,6 +2,7 @@ import { FaArrowTrendDown } from "react-icons/fa6";
 import { RiDownload2Fill } from "react-icons/ri";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
+import { fetchExpenses } from "@/app/lib/utils";
 
 interface Expense {
   id: string;
@@ -10,27 +11,13 @@ interface Expense {
   amount: number;
 }
 
-const fetchExpenses = async () => {
-  try {
-    const res = await fetch("/api/expense");
-    if (!res.ok) {
-      const erorData = await res.json();
-      throw new Error(erorData.message || "Failed to fetch expenses");
-    }
-    return res.json();
-  } catch (error) {
-    console.log("fetch error", error);
-    throw new Error("network error please try again");
-  }
-};
-
 const ExpenseSource = () => {
   const {
     data: expenses,
     isLoading,
     error,
   } = useQuery<Expense[]>({
-    queryKey: ["incomes"],
+    queryKey: ["expenses"],
     queryFn: fetchExpenses,
   });
 
@@ -46,7 +33,7 @@ const ExpenseSource = () => {
     });
   };
   return (
-    <div className="w-full h-[400px] rounded-md bg-white shadow-sm py-4 px-6">
+    <div className="w-full h-full rounded-md bg-white shadow-sm py-4 px-6">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold ">Expense Sources</h3>
 
@@ -63,7 +50,9 @@ const ExpenseSource = () => {
             key={expense.id}
           >
             <div className="flex items-center gap-3">
-              <div className="w-[55px] h-[55px] rounded-full flex justify-center items-center bg-gray-100 border"></div>
+              <div className="w-[55px] h-[55px] rounded-full flex justify-center items-center bg-gray-100 border">
+                <p className="text-2xl">{expense.emoji || "💰"}</p>
+              </div>
               <div className="flex flex-col gap-1">
                 <h3 className="text-sm font-semibold capitalize">
                   {expense.name}

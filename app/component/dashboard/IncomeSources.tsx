@@ -2,6 +2,7 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { RiDownload2Fill } from "react-icons/ri";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
+import { formatDate } from "@/app/lib/utils";
 
 interface Income {
   id: string;
@@ -39,16 +40,8 @@ const IncomeSources = () => {
 
   if (error) return <p>Error: {error.message}</p>;
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  };
   return (
-    <div className="w-full h-[400px] rounded-md bg-white shadow-sm py-4 px-6">
+    <div className="w-full h-full rounded-md bg-white shadow-sm py-4 px-6">
       <div className="flex justify-between items-center">
         <h3 className="text-xl font-semibold ">Income Sources</h3>
 
